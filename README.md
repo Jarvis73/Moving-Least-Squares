@@ -13,19 +13,19 @@ In computer graphics, the moving least squares method is useful for reconstructi
 ## Preview
 * Toy
 
-![Affine deformation](https://github.com/jarvis73/Moving-Least-Squares/toy_1_affine.png)
+![Affine deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/toy_1_affine.png)
 
-![Similarity deformation](https://github.com/jarvis73/Moving-Least-Squares/toy_2_similarity.png)
+![Similarity deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/toy_2_similarity.png)
 
-![Rigid deformation](https://github.com/jarvis73/Moving-Least-Squares/toy_3_rigid.png)
+![Rigid deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/toy_3_rigid.png)
 
 * Monalisa
 
-![Rigid deformation](https://github.com/jarvis73/Moving-Least-Squares/monalisa_3_rigid.png)
+![Rigid deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/monalisa_3_rigid.png)
 
 * Cells
 
-![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/tiff_deformation)
+![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/tiff_deformation)
 
 ## Code list
 * `img_utils.py`: Implementation of the algorithms
