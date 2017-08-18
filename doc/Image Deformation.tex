@@ -1,0 +1,189 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath, amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{xeCJK}
+\usepackage{indentfirst}
+\usepackage{fontspec}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{color}
+\usepackage{framed}
+\usepackage[colorlinks, linkcolor=black]{hyperref}
+
+\renewcommand{\baselinestretch}{1.5}
+\geometry{left=2.5cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+\setlength\parindent{2em} 
+\renewcommand{\today}{\number\year 年 \number\month 月 \number\day 日}
+\newtheorem{lemma}{\hspace{2em}引理}
+\newtheorem{theorem}{\hspace{2em}定理}
+\newtheorem{defination}{\hspace{2em}定义}
+
+\makeatletter
+\renewenvironment{proof}[1][\hspace{2em}证]{
+	\par%
+	\def\FrameCommand{\fboxsep=\FrameSep \colorbox{shadecolor}}%
+	\MakeFramed {\FrameRestore}%
+	\pushQED{\qed}%
+	\linespread{1.3}\selectfont%
+	\CJKfamily{kai} \topsep6\p@\@plus6\p@\relax%
+	\trivlist%
+	\item\relax%
+	{\CJKfamily{hei}#1\hspace{1em}}\hspace\labelsep\ignorespaces
+}{%
+	\popQED\endtrivlist\@endpefalse\endMakeFramed%
+}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{0.97,0.97,0.97}
+
+\begin{document}
+\author{张建伟}
+\date{\today}
+\title{Image Deformation Using Moving Least Squares\\ 阅读笔记}
+\maketitle
+
+\section{Moving Least Squares Deformation}
+\begin{itemize}
+	\item $p$: 一列控制顶点.
+	\item $q$: 控制顶点变换后的坐标. 
+\end{itemize}
+给定图上的一点$v$, 求解一个最优的仿射变换来最小化
+\begin{equation}
+	\sum_i w_i|l_v(p_i)-q_i|^2,
+\end{equation}
+其中$p_i$和$q_i$都是行向量, 每行的分量为点的坐标, 权重$w_i$有如下的形式
+$$
+w_i = \frac{1}{|p_i-v|^{2\alpha}}.
+$$
+因为该最小二乘问题中的权重$w_i$独立于$v$变形后的点, 所以我们称之为{\it 移动最小二乘最小化}. 对于不同的$v$, 可以得到不同的变换$l_v(x)$. 由于$l_v(x)$是仿射变换, 所以可以写成
+\begin{equation}
+	l_v(x) = xM+T.
+\end{equation}
+令原始的优化函数对$T$求偏导数并令其为$0$, 解出
+\begin{equation*}
+	T = q^* - p^*M,
+\end{equation*}
+其中$p^*$和$q^*$是原来一系列控制顶点的加权质心, 
+\begin{equation*}
+	p^* = \frac{\sum_i w_ip_i}{\sum_i w_i},\qquad 	q^* = \frac{\sum_i w_iq_i}{\sum_i w_i}.
+\end{equation*}
+所以有
+\begin{equation}
+	l_v(x) = (x-p^*)M+q^*.
+\end{equation}
+所以原优化函数可以修改为
+\begin{equation}\label{eq01}
+	\sum_i w_i|\hat{p}_iM-\hat{q}_i|^2,
+\end{equation}
+其中$\hat{p}_i=p_i-p^*,\;\hat{q}_i=q_i-q^*$, 考虑二维图像时, $M$就是一个$2\times2$的矩阵. 
+
+\subsection{Affine Deformation}
+要找一个仿射变换来极小化方程(\ref{eq01}), 直接用古典方法求解优化问题得
+\begin{equation*}
+	M = \left(\sum_i\hat{p}_i^{\top}w_i\hat{p}_i\right)^{-1}\;\sum_j\hat{p}_j^{\top}w_j\hat{q}_j.
+\end{equation*}
+从而我们可以写出仿射变换的表达式
+\begin{equation}
+	f_a(v) = (v-p^*)\left(\sum_i\hat{p}_i^{\top}w_i\hat{p}_i\right)^{-1}\;\sum_j\hat{p}_j^{\top}w_j\hat{q}_j+q^*.
+\end{equation}
+又因为$p_i$是固定的, 所以上式可以变为
+\begin{equation*}
+	f_a(v) = \sum_jA_j\hat{q}_j + q^*,
+\end{equation*}
+其中$A_j$可以预计算
+\begin{equation*}
+	A_j = (v-p^*)\left(\sum_i\hat{p}_i^{\top}w_i\hat{p}_i\right)^{-1}w_j\hat{p}_j^{\top}.
+\end{equation*}
+
+直接做仿射变换会存在一些问题：原图中的网格点阵是整齐排列的，　变换到目标图像中后便不再整齐排列，由于是浮点数运算，　所以有一些点会变换到目标图的同一个点上，　而目标图的有一些点没有任何点从原图变换过来，这就会导致变换之后的图像产生白色的镂空。解决该问题的一个比较简单的办法就是对原始图像做逆变换，这相当于在目标图像的网格点阵上计算原图中对应的点，即已知$f_a(v)$求解对应的$v$。计算公式如下：
+\begin{equation}
+	v = (f_a(v) - q^*)\left(\sum_j\hat{p}_j^{\top}w_j\hat{q}_j\right)^{-1}\left(\sum_i\hat{p}_i^{\top}w_i\hat{p}_i\right) + p^*
+\end{equation}
+
+\subsection{Similarity Deformation}
+实际上仿射变换包含了非一致性的平移和放缩，实际中的许多物体并不会产生这么复杂的变化。相似变换是仿射变换的一个子类，仅包含平移、旋转和一致的放缩。为了满足相似变换的性质，我们限制矩阵$M$满足$M^{\top}M=\lambda^2I, \exists\lambda$。如果$M$是分块矩阵，有$M=(M_1,\;\;M_2)$的形式，其中$M_1, M_2$都是长度为$2$的列向量，那么对于$M$的限制可以变为$M_1^{\top}M_1=M_2^{\top}M_2=\lambda^2$，并且$M_1^{\top}M_2=0$。这个限制意味着$M_2=M_2^{\bot}$，其中$\bot$是一个作用于二维向量的算子使得$(x, y)^{\bot}=(-y, x)$。这样原来的目标方程(\ref{eq01})可以修改为
+\begin{equation}
+	\sum_i w_i\left|\left(\begin{matrix}
+	\hat{p}_i \\ -\hat{p}_i^{\bot}
+	\end{matrix}\right)M_1-\hat{q}_i^{\top}\right|^2.
+\end{equation}
+该二次方程有唯一的最优值，从而可以得到最优值点$M$
+\begin{equation}\label{eq02}
+	M = \frac{1}{\mu_s}\sum_i w_i\left(\begin{matrix}
+	\hat{p}_i \\ \hat{p}_i^{\bot}
+	\end{matrix}\right)\left(\begin{matrix}
+	\hat{q}_i^{\top} & \hat{q}_i^{\bot\top}
+	\end{matrix}\right),
+\end{equation}
+其中$\mu_s=\sum_i w_i\hat{p}_i\hat{p}_i^{\top}$。从而得到最终的变换公式
+\begin{equation*}
+	f_s(v) = \sum_i\hat{q}_i\left(\frac{1}{\mu_s}A_i\right)+q^*,
+\end{equation*}
+其中$A_i$是
+\begin{equation}\label{eq03}
+	A_i = w_i\left(\begin{matrix}
+	\hat{p}_i \\ \hat{p}_i^{\bot}
+	\end{matrix}\right)\left(\begin{matrix}
+	v-p^* \\ -(v-p^*)^{\bot}
+	\end{matrix}\right)^{\top}.
+\end{equation}
+类似的我们可以得到逆相似变换的公式
+\begin{equation}
+	v = \mu_s(f_s(v) - q^*)\left(\begin{matrix}
+	\Delta \\ \Delta^{\bot}
+	\end{matrix}\right)^{\top} + p^*,
+\end{equation}
+其中
+$$
+\Delta=\sum_i\hat{q}_iw_i\left(\begin{matrix}\hat{p}_i\\\hat{p}_i^{\bot}\end{matrix}\right).
+$$
+
+\subsection{Rigid Deformation}
+进一步地，我们要求变换中不包括一致放缩，即限制变为$M^{\top}M=I$。先给出一个定理，这个定理说明了刚性变换和相似变换的关系。
+\begin{theorem}
+	令$C$是可以极小化如下相似问题的矩阵
+	\begin{equation*}
+		\min_{M^{\top}M=\lambda^2I}\sum_iw_i\left|\hat{p}_iM-\hat{q}_i\right|.
+	\end{equation*}
+	如果$C$写成$\lambda R$的形式，$R$是一个旋转矩阵，$\lambda$是一个标量，那么旋转矩阵$R$极小化如下的刚性问题
+	\begin{equation*}
+		\min_{M^{\top}M=I}\sum_iw_i\left|\hat{p}_iM-\hat{q}_i\right|.
+	\end{equation*}
+\end{theorem}
+定理证明略去，可以参考原文中的$Appendix A$。
+
+根据定理我们知道刚性变化恰好就是方程(\ref{eq02})，除了把其中的$\mu_s$替换为$\mu_r$
+\begin{equation*}
+	\mu_r = \sqrt{\left(\sum_iw_i\hat{q}_i\hat{p}_i^{\top}\right)^2 + \left(\sum_iw_i\hat{q}_i\hat{p}_i^{\bot\top}\right)^2}.
+\end{equation*}
+令
+\begin{equation*}
+	\overrightarrow{f}_r(v)=\sum_i\hat{q}_iA_i,
+\end{equation*}
+其中$A_i$由式(\ref{eq03})定义，最后的变换公式为
+\begin{equation}
+	f_r(v)  = \left|v-p^*\right|\frac{\overrightarrow{f}_r(v)}{\left|\overrightarrow{f}_r(v)\right|} + q^*.
+\end{equation}
+上述变换公式不易求得其逆变换，所以近似地使用如下逆变换
+\begin{equation*}
+	v  = \left|f(v)-q^*\right|\frac{\overrightarrow{g}_r(v)}{\left|\overrightarrow{g}_r(v)\right|} + p^*.
+\end{equation*}
+其中
+\begin{equation*}
+	\overrightarrow{g}_r(v) = (f(v)-q^*)\left(\begin{matrix}	\Delta \\ \Delta^{\bot}	\end{matrix}\right)^{-\top}
+\end{equation*}
+
+
+
+
+
+
+
+\end{document}
