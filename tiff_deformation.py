@@ -45,16 +45,20 @@ if __name__ == "__main__":
     height = train_images.shape[1]
     width = train_images.shape[2]
 
+    plt.figure(figsize=(10, 10))
     plt.subplot(221)
+    plt.axis('off')
     plt.imshow(train_images[0], cmap='gray')
     plt.title("Original image")
-
+    
     for i in range(3):
         p, q = generate_ctrl_pts(height, width, size=5, range=20)
         rigid = mls_rigid_deformation_inv(train_images[0], p, q)
         plt.subplot(2, 2, i+2)
         plt.imshow(rigid, cmap='gray')
         plt.title("Generate rigid " + str(i + 1))
+        plt.axis('off')
+    plt.tight_layout(w_pad=1.0)
 
     plt.show()
 

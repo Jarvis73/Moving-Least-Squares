@@ -13,7 +13,6 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
-plt.rcParams['font.family'] = 'SimSun'
 from img_utils import (mls_affine_deformation, mls_affine_deformation_inv,
                        mls_similarity_deformation, mls_similarity_deformation_inv,
                        mls_rigid_deformation, mls_rigid_deformation_inv)
@@ -34,28 +33,36 @@ def demo(fun, fun_inv, name):
         [80, 235], [140, 235], [85, 295], [180, 295]
     ])
     image = plt.imread(os.path.join(sys.path[0], "mr_big_ori.jpg"))
+
+    plt.figure(figsize=(8, 6))
     plt.subplot(231)
+    plt.axis('off')
     plt.imshow(image)
-    plt.title("原图")
+    plt.title("Original Image")
     if fun is not None:
         transformed_image = fun(image, p, q, alpha=1, density=1)
         plt.subplot(232)
+        plt.axis('off')
         plt.imshow(transformed_image)
-        plt.title("%s变换 -- 采样密度 1"%name)
+        plt.title("%s Deformation \n Sampling density 1"%name)
         transformed_image = fun(image, p, q, alpha=1, density=0.7)
         plt.subplot(235)
+        plt.axis('off')
         plt.imshow(transformed_image)
-        plt.title("%s变换 -- 采样密度 0.7"%name)
+        plt.title("%s Deformation \n Sampling density 0.7"%name)
     if fun_inv is not None:
         transformed_image = fun_inv(image, p, q, alpha=1, density=1)
         plt.subplot(233)
+        plt.axis('off')
         plt.imshow(transformed_image)
-        plt.title("逆%s变换 -- 采样密度 1"%name)
+        plt.title("Inverse %s Deformation \n Sampling density 1"%name)
         transformed_image = fun_inv(image, p, q, alpha=1, density=0.7)
         plt.subplot(236)
+        plt.axis('off')
         plt.imshow(transformed_image)
-        plt.title("逆%s变换 -- 采样密度 0.7"%name)
+        plt.title("Inverse %s Deformation \n Sampling density  0.7"%name)
 
+    plt.tight_layout(w_pad=0.1)
     plt.show()
 
 def demo2(fun):
@@ -73,22 +80,25 @@ def demo2(fun):
     ])
     image = plt.imread(os.path.join(sys.path[0], "monalisa.jpg"))
     plt.subplot(121)
+    plt.axis('off')
     plt.imshow(image)
     transformed_image = fun(image, p, q, alpha=1, density=1)
     plt.subplot(122)
+    plt.axis('off')
     plt.imshow(transformed_image)
+    plt.tight_layout(w_pad=1.0, h_pad=1.0)
     plt.show()
 
 
 if __name__ == "__main__":
     #affine deformation
-    #demo(mls_affine_deformation, mls_affine_deformation_inv, "仿射")
+    #demo(mls_affine_deformation, mls_affine_deformation_inv, "Affine")
     #demo2(mls_affine_deformation_inv)
 
     #similarity deformation
-    #demo(mls_similarity_deformation, mls_similarity_deformation_inv, "相似")
+    #demo(mls_similarity_deformation, mls_similarity_deformation_inv, "Similarity")
     #demo2(mls_similarity_deformation_inv)
 
     #rigid deformation
-    #demo(mls_rigid_deformation, mls_rigid_deformation_inv, "刚性")
+    #demo(mls_rigid_deformation, mls_rigid_deformation_inv, "Rigid")
     demo2(mls_rigid_deformation_inv)
