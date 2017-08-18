@@ -25,7 +25,7 @@ In computer graphics, the moving least squares method is useful for reconstructi
 
 * Cells
 
-![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/tiff_deformation)
+![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/tiff_deformation.png)
 
 ## Code list
 * `img_utils.py`: Implementation of the algorithms
