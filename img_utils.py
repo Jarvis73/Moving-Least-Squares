@@ -14,7 +14,7 @@ Image deformation using moving least squares.
 
 For more details please reference the documentation: 
     
-    DeepLearning/models/U-Net/util/doc/Image Deformation.pdf
+    Moving-Least-Squares/doc/Image Deformation.pdf
 
 or the original paper: 
     
