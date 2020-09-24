@@ -1,14 +1,16 @@
 # Moving Least Squares (MLS)
 
+**Update: 2020-09-25** No need for so-called inverse transformation. Just transform target pixels to the corresponding source pixels.
+
 ## Introduction
 **Moving least squares** is a method of reconstructing continuous functions from a set of unorganized point samples via the calculation of a weighted least squares measure biased towards the region around the point at which the reconstructed value is requested.
 
 In computer graphics, the moving least squares method is useful for reconstructing a surface from a set of points. Often it is used to create a 3D surface from a point cloud through either downsampling or upsampling.
 
 ## Methods
-* Affine deformation (inverse)
-* Similarity deformation (inverse)
-* Rigid deformation (inverse)
+* Affine deformation
+* Similarity deformation
+* Rigid deformation
 
 ## Preview
 * Toy
