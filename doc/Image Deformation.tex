@@ -102,18 +102,15 @@ $$
 	A_j = (v-p^*)\left(\sum_i\hat{p}_i^{\top}w_i\hat{p}_i\right)^{-1}w_j\hat{p}_j^{\top}.
 \end{equation*}
 
-直接做仿射变换会存在一些问题：原图中的网格点阵是整齐排列的，　变换到目标图像中后便不再整齐排列，由于是浮点数运算，　所以有一些点会变换到目标图的同一个点上，　而目标图的有一些点没有任何点从原图变换过来，这就会导致变换之后的图像产生白色的镂空。解决该问题的一个比较简单的办法就是对原始图像做逆变换，这相当于在目标图像的网格点阵上计算原图中对应的点，即已知$f_a(v)$求解对应的$v$。计算公式如下：
-\begin{equation}
-	v = (f_a(v) - q^*)\left(\sum_j\hat{p}_j^{\top}w_j\hat{q}_j\right)^{-1}\left(\sum_i\hat{p}_i^{\top}w_i\hat{p}_i\right) + p^*
-\end{equation}
 
 \subsection{Similarity Deformation}
-实际上仿射变换包含了非一致性的平移和放缩，实际中的许多物体并不会产生这么复杂的变化。相似变换是仿射变换的一个子类，仅包含平移、旋转和一致的放缩。为了满足相似变换的性质，我们限制矩阵$M$满足$M^{\top}M=\lambda^2I, \exists\lambda$。如果$M$是分块矩阵，有$M=(M_1,\;\;M_2)$的形式，其中$M_1, M_2$都是长度为$2$的列向量，那么对于$M$的限制可以变为$M_1^{\top}M_1=M_2^{\top}M_2=\lambda^2$，并且$M_1^{\top}M_2=0$。这个限制意味着$M_2=M_2^{\bot}$，其中$\bot$是一个作用于二维向量的算子使得$(x, y)^{\bot}=(-y, x)$。这样原来的目标方程(\ref{eq01})可以修改为
+实际上仿射变换包含了非一致性的平移和放缩，实际中的许多物体并不会产生这么复杂的变化。相似变换是仿射变换的一个子类，仅包含平移、旋转和一致的放缩。为了满足相似变换的性质，我们限制矩阵$M$满足$M^{\top}M=\lambda^2I, \exists\lambda$。如果$M$是分块矩阵，有$M=(M_1,\;\;M_2)$的形式，其中$M_1, M_2$都是长度为$2$的列向量，那么对于$M$的限制可以变为$M_1^{\top}M_1=M_2^{\top}M_2=\lambda^2$，并且$M_1^{\top}M_2=0$。这个限制意味着$M_2=M_1^{\bot}$，其中$\bot$是一个作用于二维向量的算子使得$(x, y)^{\bot}=(-y, x)$。这样原来的目标方程(\ref{eq01})可以修改为
 \begin{equation}
 	\sum_i w_i\left|\left(\begin{matrix}
-	\hat{p}_i \\ -\hat{p}_i^{\bot}
+	\hat{p}_i \\ \hat{p}_i^{\bot}
 	\end{matrix}\right)M_1-\hat{q}_i^{\top}\right|^2.
 \end{equation}
+(注: 论文上式中有个符号可能写错了, 有待进一步确认.) 
 该二次方程有唯一的最优值，从而可以得到最优值点$M$
 \begin{equation}\label{eq02}
 	M = \frac{1}{\mu_s}\sum_i w_i\left(\begin{matrix}
@@ -134,16 +131,7 @@ $$
 	v-p^* \\ -(v-p^*)^{\bot}
 	\end{matrix}\right)^{\top}.
 \end{equation}
-类似的我们可以得到逆相似变换的公式
-\begin{equation}
-	v = \mu_s(f_s(v) - q^*)\left(\begin{matrix}
-	\Delta \\ \Delta^{\bot}
-	\end{matrix}\right)^{\top} + p^*,
-\end{equation}
-其中
-$$
-\Delta=\sum_i\hat{q}_iw_i\left(\begin{matrix}\hat{p}_i\\\hat{p}_i^{\bot}\end{matrix}\right).
-$$
+
 
 \subsection{Rigid Deformation}
 进一步地，我们要求变换中不包括一致放缩，即限制变为$M^{\top}M=I$。先给出一个定理，这个定理说明了刚性变换和相似变换的关系。
@@ -171,18 +159,6 @@ $$
 \begin{equation}
 	f_r(v)  = \left|v-p^*\right|\frac{\overrightarrow{f}_r(v)}{\left|\overrightarrow{f}_r(v)\right|} + q^*.
 \end{equation}
-上述变换公式不易求得其逆变换，所以近似地使用如下逆变换
-\begin{equation*}
-	v  = \left|f(v)-q^*\right|\frac{\overrightarrow{g}_r(v)}{\left|\overrightarrow{g}_r(v)\right|} + p^*.
-\end{equation*}
-其中
-\begin{equation*}
-	\overrightarrow{g}_r(v) = (f(v)-q^*)\left(\begin{matrix}	\Delta \\ \Delta^{\bot}	\end{matrix}\right)^{-\top}
-\end{equation*}
-
-
-
-
 
 
 
