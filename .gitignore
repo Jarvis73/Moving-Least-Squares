@@ -2,3 +2,6 @@ doc/
 !doc/*.tex
 !doc/*.pdf
 __pycache__
+
+images/train-volume.tif
+images/train-labels.tif

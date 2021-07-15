@@ -99,7 +99,74 @@ def demo2():
     plt.show()
 
 
+def read_tif(frame):
+    image_pil = Image.open("images/train-volume.tif")
+    image_pil.seek(frame)
+    image = np.array(image_pil)
+    label_pil = Image.open("images/train-labels.tif")
+    label_pil.seek(frame)
+    label = np.array(label_pil)
+
+    return image, label
+
+
+def demo3():
+    image, label = read_tif(1)
+    image = np.pad(image, ((30, 30), (30, 30)), mode='symmetric')
+    label = np.pad(label, ((30, 30), (30, 30)), mode='symmetric')
+
+    height, width = image.shape
+    gridX = np.arange(width, dtype=np.int16)
+    gridY = np.arange(height, dtype=np.int16)
+    vy, vx = np.meshgrid(gridX, gridY)
+
+    def augment(p, q, mode='affine'):
+        if mode.lower() == 'affine':
+            transform = mls_affine_deformation(vy, vx, p, q, alpha=1)
+        elif mode.lower() == 'similar':
+            transform = mls_similarity_deformation(vy, vx, p, q, alpha=1)
+        elif mode.lower() == 'rigid':
+            transform = mls_rigid_deformation(vy, vx, p, q, alpha=1)
+        else:
+            raise ValueError
+
+        aug_img = np.ones_like(image)
+        aug_img[vx, vy] = image[tuple(transform)]
+        aug_lab = np.ones_like(label)
+        aug_lab[vx, vy] = label[tuple(transform)]
+
+        return aug_img, aug_lab
+
+    fig, ax = plt.subplots(2, 4, figsize=(12, 6))
+    ax[0, 0].imshow(image, cmap='gray')
+    ax[0, 0].set_title("Original Image")
+    ax[1, 0].imshow(label, cmap='gray')
+    ax[1, 0].set_title("Original Label")
+    
+    np.random.seed(1234)
+    p = np.c_[np.random.randint(0, height, size=32), np.random.randint(0, width, size=32)]
+    q = p + np.random.randint(-15, 15, size=p.shape)
+    q[:, 0] = np.clip(q[:, 0], 0, height)
+    q[:, 1] = np.clip(q[:, 1], 0, width)
+    p = np.r_[p, np.array([[0, 0], [0, width - 1], [height - 1, 0], [height - 1, width - 1]])]  # fix corner points
+    q = np.r_[q, np.array([[0, 0], [0, width - 1], [height - 1, 0], [height - 1, width - 1]])]  # fix corner points
+
+    for i, mode in enumerate(['Affine', 'Similar', 'Rigid']):
+        aug_img, aug_lab = augment(p, q, mode)
+        ax[0, i + 1].imshow(aug_img, cmap='gray')
+        ax[0, i + 1].set_title(f"{mode} Deformated Image")
+        ax[1, i + 1].imshow(aug_lab, cmap='gray')
+        ax[1, i + 1].set_title(f"{mode} Deformated Label")
+
+    for x in ax.flat:
+        x.axis('off')
+
+    plt.tight_layout(w_pad=1.0, h_pad=1.0)
+    plt.show()
+
+
 if __name__ == "__main__":
     # demo()
-    demo2()
+    # demo2()
+    demo3()
 

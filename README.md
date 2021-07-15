@@ -16,7 +16,8 @@ In computer graphics, the moving least squares method is useful for reconstructi
 * Similarity deformation
 * Rigid deformation
 
-## Preview
+## Results
+
 * Toy
 
 ![Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/toy_results.png)
@@ -25,15 +26,17 @@ In computer graphics, the moving least squares method is useful for reconstructi
 
 ![Rigid deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/monalisa_rigid.png)
 
-* Cells
+* Cells ([Download data](https://github.com/alexklibisz/isbi-2012/tree/master/data))
 
-![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/tiff_deformation.png)
+![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/cell_deformation.png)
+
+The original label is overlapped on the deformed labels for better comparison.
+
+![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/cell_deformation_with_alpha.png)
 
 ## Code list
 * `img_utils.py`: Implementation of the algorithms
 * `img_utils_demo.py`: Demo program
-* `read_tif.py`: TIF file reader
-* `tiff_deformation.py`: Demo program
 
 ### Optimize memory usage
 
