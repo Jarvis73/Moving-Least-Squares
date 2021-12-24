@@ -1,11 +1,5 @@
 # Moving Least Squares (MLS)
 
-**Update:** 
-
-*   **2021-07-14:**  Optimize memory usage. Now a 2000x2000 image with 64 control points spend about 4.2GB memory. (20GB in the previous version)
-
-*   **2020-09-25:**  No need for so-called inverse transformation. Just transform target pixels to the corresponding source pixels.
-
 ## Introduction
 **Moving least squares** is a method of reconstructing continuous functions from a set of unorganized point samples via the calculation of a weighted least squares measure biased towards the region around the point at which the reconstructed value is requested.
 
@@ -22,7 +16,7 @@ In computer graphics, the moving least squares method is useful for reconstructi
 
 ![Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/toy_results.png)
 
-* Monalisa
+* Monalisa (Rigid)
 
 ![Rigid deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/monalisa_rigid.png)
 
@@ -36,7 +30,7 @@ The original label is overlapped on the deformed labels for better comparison.
 
 ## Code list
 * `img_utils.py`: Implementation of the algorithms
-* `img_utils_demo.py`: Demo program
+* `img_utils_demo.py`: Demo programs
 
 ### Optimize memory usage
 
@@ -56,6 +50,14 @@ The original label is overlapped on the deformed labels for better comparison.
     *   2: coordinates (x, y)
     *   2~2.5: intermediate results
 
+
+### Update
+
+*   **2021-12-24:** Fix a bug of nan values in `mls_rigid_deformation()`. (see issue #13)
+
+*   **2021-07-14:**  Optimize memory usage. Now a 2000x2000 image with 64 control points spend about 4.2GB memory. (20GB in the previous version)
+
+*   **2020-09-25:**  No need for so-called inverse transformation. Just transform target pixels to the corresponding source pixels.
 
 
 ## Reference

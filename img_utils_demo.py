@@ -5,9 +5,11 @@
 Image deformation using moving least squares
 
 @author: Jian-Wei ZHANG
+@email: zjw.cs@zju.edu.cn
 @date: 2017/8/8
 @update: 2020/9/25
-@update: 2021/7/14: simplify usage
+@update: 2021/7/14: Simplify usage
+@update: 2021/12/24: Fix bugs and add an example of random control points (see `demo2()`)
 """
 
 import numpy as np
@@ -18,12 +20,12 @@ from PIL import Image
 
 def demo():
     p = np.array([
-        [30, 155], [125, 155], [225, 155],
-        [100, 235], [160, 235], [85, 295], [180, 293]
+        [155, 30], [155, 125], [155, 225],
+        [235, 100], [235, 160], [295, 85], [293, 180]
     ])
     q = np.array([
-        [42, 211], [125, 155], [235, 100],
-        [80, 235], [140, 235], [85, 295], [180, 295]
+        [211, 42], [155, 125], [100, 235],
+        [235, 80], [235, 140], [295, 85], [295, 180]
     ])
     
     image = np.array(Image.open("images/toy.jpg"))
@@ -45,7 +47,6 @@ def demo():
     aug3 = np.ones_like(image)
     aug3[vx, vy] = image[tuple(rigid)]
 
-
     fig, ax = plt.subplots(1, 4, figsize=(12, 4))
     ax[0].imshow(image)
     ax[0].set_title("Original Image")    
@@ -65,32 +66,48 @@ def demo():
 
 def demo2():
     """ Smiled Monalisa """
+    np.random.seed(1234)
     
-    p = np.array([[0, 0], [0, 517], [798, 0], [798, 517],
-        [186, 140], [295, 135], [208, 181], [261, 181], [184, 203], [304, 202], [213, 225], 
-        [243, 225], [211, 244], [253, 244], [195, 254], [232, 281], [285, 252]
-    ])
-    q = np.array([[0, 0], [0, 517], [798, 0], [798, 517],
-        [186, 140], [295, 135], [208, 181], [261, 181], [184, 203], [304, 202], [213, 225], 
-        [243, 225], [207, 238], [261, 237], [199, 253], [232, 281], [279, 249]
-    ])
-
     image = np.array(Image.open("images/monalisa.jpg"))
-
     height, width, _ = image.shape
+    
+    # Define deformation grid
     gridX = np.arange(width, dtype=np.int16)
     gridY = np.arange(height, dtype=np.int16)
     vy, vx = np.meshgrid(gridX, gridY)
 
-    rigid = mls_rigid_deformation(vy, vx, p, q, alpha=1)
-    aug = np.ones_like(image)
-    aug[vx, vy] = image[tuple(rigid)]
+    # ================ Control points group 1 (manually specified) ==================
+    p1 = np.array([[0, 0], [517, 0], [0, 798], [517, 798],
+        [140, 186], [135, 295], [181, 208], [181, 261], [203, 184], [202, 304], [225, 213], 
+        [225, 243], [244, 211], [244, 253], [254, 195], [281, 232], [252, 285]
+    ])
+    q1 = np.array([[0, 0], [517, 0], [0, 798], [517, 798],
+        [140, 186], [135, 295], [181, 208], [181, 261], [203, 184], [202, 304], [225, 213], 
+        [225, 243], [238, 207], [237, 261], [253, 199], [281, 232], [249, 279]
+    ])
 
-    fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+    rigid1 = mls_rigid_deformation(vy, vx, p1, q1, alpha=1)
+    aug1 = np.ones_like(image)
+    aug1[vx, vy] = image[tuple(rigid1)]
+
+    # ====================== Control points group 1 (random) =======================
+    p2 = np.stack((
+        np.random.randint(0, height, size=13), 
+        np.random.randint(0, width, size=13),
+    ), axis=1)
+    q2 = p2 + np.random.randint(-20, 20, size=p2.shape)
+
+    rigid2 = mls_rigid_deformation(vy, vx, p2, q2, alpha=1)
+    aug2 = np.ones_like(image)
+    aug2[vx, vy] = image[tuple(rigid2)]
+
+    fig, ax = plt.subplots(1, 3, figsize=(13, 6))
     ax[0].imshow(image)
     ax[0].set_title("Original Image")
-    ax[1].imshow(aug)
-    ax[1].set_title("Rigid Deformation")
+    ax[1].imshow(aug1)
+    ax[1].set_title("Manually specified control points")
+    ax[2].imshow(aug2)
+    ax[2].set_title("Random control points")
 
     for x in ax.flat:
         x.axis("off")
@@ -166,7 +183,7 @@ def demo3():
 
 
 if __name__ == "__main__":
-    # demo()
+    demo()
     # demo2()
-    demo3()
+    # demo3()
 
