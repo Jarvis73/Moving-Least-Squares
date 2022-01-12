@@ -1,4 +1,4 @@
-# Moving Least Squares (MLS)
+# Moving Least Squares (MLS) (Numpy & PyTorch)
 
 ## Introduction
 **Moving least squares** is a method of reconstructing continuous functions from a set of unorganized point samples via the calculation of a weighted least squares measure biased towards the region around the point at which the reconstructed value is requested.
@@ -9,6 +9,8 @@ In computer graphics, the moving least squares method is useful for reconstructi
 * Affine deformation
 * Similarity deformation
 * Rigid deformation
+
+Please check the `demo.py` for usage.
 
 ## Results
 
@@ -29,12 +31,14 @@ The original label is overlapped on the deformed labels for better comparison.
 ![Rigid Deformation](https://github.com/jarvis73/Moving-Least-Squares/raw/master/images/cell_deformation_with_alpha.png)
 
 ## Code list
-* `img_utils.py`: Implementation of the algorithms
-* `img_utils_demo.py`: Demo programs
+* `img_utils.py`: Numpy implementation of the algorithms
+* `img_utils_pytorch.py`: PyTorch implementation of the algorithms
+* `interp_torch.py`: 
+* `demo.py`: Demo programs
 
 ### Optimize memory usage
 
-*   Here lists some examples of memory usage and running time
+*   Here lists some examples of memory usage and running time of the numpy implementation
 
 | Image Size  | Control Points | Affine         | Similarity     | Rigid          |
 | ----------- | -------------- | -------------- | -------------- | -------------- |
@@ -51,9 +55,28 @@ The original label is overlapped on the deformed labels for better comparison.
     *   2~2.5: intermediate results
 
 
+### Accelerating by PyTorch
+
+The algorithm is also implemented with [PyTorch](https://pytorch.org/) and has faster speed benefiting from the CUDA acceleration.
+
+* Rigid deformation
+
+| Image Size  | Control Points | Numpy     | PyTorch with CUDA |
+| ----------- | -------------- | --------- | -------- |
+| 100 x 100   | 16             | 0.025s    | 0.128s   |
+| 500 x 500   | 16             | 0.753s    | 0.187s   |
+| 500 x 500   | 32             | 1.934s    | 0.205s   |
+| 500 x 500   | 64             | 3.384s    | 0.483s   |
+| 1000 x 1000 | 64             | 13.089s   | 0.663s   |
+| 2000 x 2000 | 64             | 61.874s   | 1.784s   |
+
+(* Tested on pytorch=1.6.0 with cudatoolkit=10.1)
+
 ### Update
 
-*   **2021-12-24:** Fix a bug of nan values in `mls_rigid_deformation()`. (see issue #13)
+*   **2022-01-12**   Implement three algorithms with PyTorch
+
+*   **2021-12-24:**  Fix a bug of nan values in `mls_rigid_deformation()`. (see issue #13)
 
 *   **2021-07-14:**  Optimize memory usage. Now a 2000x2000 image with 64 control points spend about 4.2GB memory. (20GB in the previous version)
 
@@ -63,3 +86,5 @@ The original label is overlapped on the deformed labels for better comparison.
 ## Reference
 
 [1] Schaefer S, Mcphail T, Warren J. Image deformation using moving least squares[C]// ACM SIGGRAPH. ACM, 2006:533-540.
+
+[2] `interp` implementation in `interp_torch.py`. [Github: aliutkus/torchinterp1d](https://github.com/aliutkus/torchinterp1d)
