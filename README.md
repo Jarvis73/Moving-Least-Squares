@@ -55,7 +55,7 @@ The original label is overlapped on the deformed labels for better comparison.
     *   2~2.5: intermediate results
 
 
-### Accelerating by PyTorch
+### Accelerated by PyTorch
 
 The algorithm is also implemented with [PyTorch](https://pytorch.org/) and has faster speed benefiting from the CUDA acceleration.
 
