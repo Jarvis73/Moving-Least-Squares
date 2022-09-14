@@ -10,7 +10,26 @@ In computer graphics, the moving least squares method is useful for reconstructi
 * Similarity deformation
 * Rigid deformation
 
-Please check the `demo.py` for usage.
+## Usage
+
+### 1. Install Packages
+
+```bash
+pip install numpy scikit-image matplotlib
+```
+
+The accelerated algorithms requires `PyTorch`. [PyTorch Installation Guide](https://pytorch.org/get-started/locally/)
+
+### 2. Try the demo
+
+Please check the `demo.py` for usage. We provide four demos:
+
+```python
+demo()          # Toy
+demo2()         # Monalisa
+demo3()         # Cells
+demo_torch()    # Toy in PyTorch
+```
 
 ## Results
 
@@ -33,8 +52,10 @@ The original label is overlapped on the deformed labels for better comparison.
 ## Code list
 * `img_utils.py`: Numpy implementation of the algorithms
 * `img_utils_pytorch.py`: PyTorch implementation of the algorithms
-* `interp_torch.py`: 
+* `interp_torch.py`: Interpolation 1D in PyTorch
 * `demo.py`: Demo programs
+
+## Metrics
 
 ### Optimize memory usage
 
@@ -72,7 +93,7 @@ The algorithm is also implemented with [PyTorch](https://pytorch.org/) and has f
 
 (* Tested on pytorch=1.6.0 with cudatoolkit=10.1)
 
-### Update
+## Update
 
 *   **2022-01-12**   Implement three algorithms with PyTorch
 

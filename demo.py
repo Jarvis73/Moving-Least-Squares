@@ -323,9 +323,9 @@ def run_benckmark(i):
 
 
 if __name__ == "__main__":
-    # demo()
-    demo_torch()
+    demo()
     # demo2()
     # demo3()
+    # demo_torch()
 
     # run_benckmark(i=0)
