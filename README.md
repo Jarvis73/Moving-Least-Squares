@@ -15,7 +15,7 @@ In computer graphics, the moving least squares method is useful for reconstructi
 ### 1. Install Packages
 
 ```bash
-pip install numpy scikit-image matplotlib
+pip install -r requirements.txt
 ```
 
 The accelerated algorithms requires `PyTorch`. [PyTorch Installation Guide](https://pytorch.org/get-started/locally/)
