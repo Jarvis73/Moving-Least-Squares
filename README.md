@@ -1,4 +1,4 @@
-# Moving Least Squares (MLS) (Numpy & PyTorch)
+[# Moving Least Squares (MLS) (Numpy & PyTorch)
 
 ## Introduction
 **Moving least squares** is a method of reconstructing continuous functions from a set of unorganized point samples via the calculation of a weighted least squares measure biased towards the region around the point at which the reconstructed value is requested.
@@ -30,6 +30,28 @@ demo2()         # Monalisa
 demo3()         # Cells
 demo_torch()    # Toy in PyTorch
 ```
+
+**NEW 2023-04-28:** [@spedr](https://github.com/spedr) provides an interactive demo. (See `interactive_demo.py`)
+
+You can run the demo with 
+
+```bash
+python interactive_demo.py images/monalisa.jpg
+```
+
+> Hotkeys:  
+> **q** or **ESC** - Quit  
+> **d** - Delete the selected control point  
+> **c** - Clear all control points  
+> **a** - Create an affine deformation and display it in a separate window  
+> **s** - Create a similarity deformation and display it in a separate window  
+> **r** - Create a rigid deformation and display it in a separate window  
+> **w** - Write the last deformation to the images folder  
+>   
+> Here's an usage example of performing a rigid deformation on Monalisa's smile.  
+>  
+> https://user-images.githubusercontent.com/22013744/231604569-c747ce8b-e074-4765-88ea-942fc3c60e8b.mp4
+
 
 ## Results
 
@@ -95,6 +117,8 @@ The algorithm is also implemented with [PyTorch](https://pytorch.org/) and has f
 
 ## Update
 
+*   **2023-04-28**   Add an interactive demo. (Thanks to [@spedr](https://github.com/spedr))
+
 *   **2022-01-12**   Implement three algorithms with PyTorch
 
 *   **2021-12-24:**  Fix a bug of nan values in `mls_rigid_deformation()`. (see issue #13)
@@ -109,3 +133,4 @@ The algorithm is also implemented with [PyTorch](https://pytorch.org/) and has f
 [1] Schaefer S, Mcphail T, Warren J. Image deformation using moving least squares[C]// ACM SIGGRAPH. ACM, 2006:533-540.
 
 [2] `interp` implementation in `interp_torch.py`. [Github: aliutkus/torchinterp1d](https://github.com/aliutkus/torchinterp1d)
+](https://github.com/spedr)
