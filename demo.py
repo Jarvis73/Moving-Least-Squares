@@ -164,7 +164,7 @@ def demo2():
     ), axis=1)
     q2 = p2 + np.random.randint(-20, 20, size=p2.shape)
 
-    rigid2 = mls_rigid_deformation_pt(vy, vx, p2, q2, alpha=1)
+    rigid2 = mls_rigid_deformation(vy, vx, p2, q2, alpha=1)
     aug2 = np.ones_like(image)
     aug2[vx, vy] = image[tuple(rigid2)]
 
